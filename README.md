@@ -19,14 +19,16 @@
 
 ## Запуск приложения
 
-    __Опции makefile__
-    1. Main
-        + _run_ - для запуска приложения
-        + _build_ - для сброки приложения
-        + _test_ - для запуска unit-тустов
-    2. Tools
-        + _lint_ - запуск линтера golanchi-lint
-    3. Docker commands
-        + _docker-build_ - для сборки приложения
-        + _docker-up_ - для запуска контейнеров
+Для запуска приложения создан Makefile 
+
+__Опции makefile__
+1. Main
+    + _run_ - для запуска приложения
+    + _build_ - для сброки приложения
+   + _test_ - для запуска unit-тустов
+2. Tools
+    + _lint_ - запуск линтера golanchi-lint
+3. Docker commands
+    + _docker-build_ - для сборки приложения
+    + _docker-up_ - для запуска контейнеров
 
