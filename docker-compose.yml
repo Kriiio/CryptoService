@@ -1,0 +1,93 @@
+version: "3.9"
+
+services:
+  # gRPC-сервис
+  grpc-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: crypto-grpc-service
+    ports:
+      - "50051:50051"  # Порт для gRPC
+      - "9090:9090"    # Порт для метрик Prometheus
+    env_file:
+      - .env
+    environment:
+      - JAEGER_URL=http://jaeger:14268/api/traces
+    depends_on:
+      - jaeger
+      - prometheus
+      - db
+      - migrations
+    networks:
+      - mylocal
+
+  # База данных
+  db:
+    image: postgres
+    container_name: crypto-db
+    env_file:
+      - .env
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: ${DB_NAME}
+    restart: unless-stopped
+    ports:
+        - "5432:5432"
+    networks:
+        - mylocal
+
+  # Миграции
+  migrations:
+     build: ./migrations
+     container_name: migrations
+     env_file:
+      - .env
+     environment:
+      GOOSE_DRIVER: ${GOOSE_DRIVER}
+      GOOSE_DBSTRING: ${GOOSE_DSN}
+     restart: unless-stopped
+     networks:
+        - mylocal
+     depends_on:
+      - db
+
+  # Jaeger для трассировки
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: jaeger
+    ports:
+      - "16686:16686"  # UI Jaeger
+      - "14268:14268"  # HTTP Collector
+      - "5778:5778"    # Agent Configuration
+    environment:
+      - COLLECTOR_ZIPKIN_HOST_PORT=:9411
+    networks:
+      - mylocal
+
+  # Prometheus для мониторинга
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: crypto-prometheus
+    ports:
+      - "9091:9090"  # Порт для Prometheus UI
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - mylocal
+
+  #client
+  client:
+    build: ./client
+    container_name: crypto-client
+    ports:
+      - "1236:1236"
+    depends_on:
+      - grpc-service
+    networks:
+      - mylocal
+
+networks:
+    mylocal:
+        driver: bridge
