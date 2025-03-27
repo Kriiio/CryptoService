@@ -24,28 +24,34 @@
 __Опции makefile__
 1. Main
     + `run` - для запуска приложения
+    
         ```bash
         make run
         ```
     + `build` - для сброки приложения
+
         ```bash
         make build
         ```
    + `test` - для запуска unit-тустов
+
         ```bash
         make test
         ```
 2. Tools
     + `lint` - запуск линтера golanchi-lint
+
         ```bash
         make limit
         ```
 3. Docker commands
     + `docker-build` - для сборки приложения
+
         ```bash
         make docker-build
         ```
     + `docker-up` - для запуска контейнеров
+
         ```bash
         make docker-up
         ```

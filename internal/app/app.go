@@ -23,7 +23,9 @@ func New(log *zap.Logger, port int, dbcfg string) *App {
 		log.Error("failed to create database", zap.Error(err))
 	}
 
-	service := service.New(log, database)
+	client := &http.Client{}
+
+	service := service.New(log, database, client)
 
 	grpcServer := appGRPC.New(log, service, port)
 

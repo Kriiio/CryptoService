@@ -5,6 +5,7 @@ import (
 	"crypto/internal/models"
 	"crypto/internal/storage"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -17,27 +18,31 @@ type Service interface {
 	GetData(ctx context.Context) (*models.Data, error)
 }
 
-type ServiceImpl struct {
-	log *zap.Logger
-	db  storage.Storage
+type HTTPClient interface {
+	Do(req *http.Request) (*http.Response, error)
 }
 
-func New(log *zap.Logger, db storage.Storage) *ServiceImpl {
+type ServiceImpl struct {
+	log    *zap.Logger
+	db     storage.Storage
+	client HTTPClient
+}
+
+func New(log *zap.Logger, db storage.Storage, client *http.Client) *ServiceImpl {
 	return &ServiceImpl{
-		log: log,
-		db:  db,
+		log:    log,
+		db:     db,
+		client: client,
 	}
 }
 
 func (s *ServiceImpl) GetData(ctx context.Context) (*models.Data, error) {
-	data, err := findRate()
+	data, err := findRate(s.client)
 
 	if err != nil {
 		s.log.Error("failed to find rate", zap.Error(err))
 		return nil, err
 	}
-
-	data.Timestamp = time.Now()
 
 	if err := s.db.Save(ctx, data); err != nil {
 		s.log.Error("failed to save data", zap.Error(err))
@@ -47,25 +52,25 @@ func (s *ServiceImpl) GetData(ctx context.Context) (*models.Data, error) {
 	return data, nil
 }
 
-func findRate() (*models.Data, error) {
+func findRate(client HTTPClient) (*models.Data, error) {
 	const op = "service.findRate"
 
-	var data *models.Data
+	data := &models.Data{}
+	data.Timestamp = time.Now()
+
 	url := "https://api.kraken.com/0/public/Depth?pair=USDTUSD&count=1"
 	method := "GET"
 
-	client := &http.Client{}
 	req, err := http.NewRequest(method, url, nil)
 
 	if err != nil {
-
-		return nil, fmt.Errorf("%s: failed to create request: %w", op, err)
+		return nil, errors.New("service.findRate: failed to create request")
 	}
 	req.Header.Add("Accept", "application/json")
 
 	res, err := client.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("%s: failed to execute request: %w", op, err)
+		return nil, errors.New("service.findRate: failed to send request")
 	}
 
 	err = json.NewDecoder(res.Body).Decode(&data)
