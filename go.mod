@@ -4,9 +4,8 @@ go 1.24.1
 
 require (
 	github.com/DATA-DOG/go-sqlmock v1.5.2
-	github.com/Kriiio/proto v0.0.6
+	github.com/Kriiio/proto v0.0.7
 	github.com/ilyakaznacheev/cleanenv v1.5.0
-	github.com/magiconair/properties v1.8.9
 	github.com/stretchr/testify v1.10.0
 	go.opentelemetry.io/otel v1.35.0
 	go.opentelemetry.io/otel/sdk v1.35.0

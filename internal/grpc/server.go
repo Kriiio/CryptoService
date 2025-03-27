@@ -8,6 +8,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 type serverAPI struct {
@@ -19,7 +20,7 @@ func Register(gRPC *grpc.Server, service service.Service) {
 	cryptoservicev1.RegisterCryptoproviderServer(gRPC, &serverAPI{service: service})
 }
 
-func (s *serverAPI) GetRates(ctx context.Context, req *cryptoservicev1.Request) (*cryptoservicev1.Response, error) {
+func (s *serverAPI) GetRates(ctx context.Context, req *emptypb.Empty) (*cryptoservicev1.Response, error) {
 	data, err := s.service.GetData(ctx)
 
 	if err != nil {
@@ -45,4 +46,10 @@ func (s *serverAPI) GetRates(ctx context.Context, req *cryptoservicev1.Request) 
 	response.Timestamp = data.Timestamp.Unix()
 
 	return &response, nil
+}
+
+func (s *serverAPI) Ping(ctx context.Context, req *emptypb.Empty) (*cryptoservicev1.ResponsePong, error) {
+	return &cryptoservicev1.ResponsePong{
+		Pong: "pong",
+	}, nil
 }

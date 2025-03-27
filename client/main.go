@@ -9,6 +9,7 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 func main() {
@@ -21,11 +22,15 @@ func main() {
 
 	client := cryptoservicev1.NewCryptoproviderClient(conn)
 
-	req := &cryptoservicev1.Request{}
-
-	res, err := client.GetRates(context.Background(), req)
+	res, err := client.GetRates(context.Background(), &emptypb.Empty{})
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println(res)
+
+	ping, err := client.Ping(context.Background(), &emptypb.Empty{})
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(ping.Pong)
 }

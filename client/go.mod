@@ -3,7 +3,7 @@ module client
 go 1.24.1
 
 require (
-	github.com/Kriiio/proto v0.0.6
+	github.com/Kriiio/proto v0.0.7
 	google.golang.org/grpc v1.71.0
 )
 

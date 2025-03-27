@@ -1,5 +1,5 @@
-github.com/Kriiio/proto v0.0.6 h1:m6DqEinyPPkCQ/vbe9NyPjofJTkapWNxOKVdT5xlokc=
-github.com/Kriiio/proto v0.0.6/go.mod h1:gg1dXfoZbJoNRevsi2AIbmfLegNo86ISTgwEU+JbRC4=
+github.com/Kriiio/proto v0.0.7 h1:kvtQj7ifPvOjWCH5QENtmIcm+Mi+yjTvyO5tV43pzjU=
+github.com/Kriiio/proto v0.0.7/go.mod h1:gg1dXfoZbJoNRevsi2AIbmfLegNo86ISTgwEU+JbRC4=
 github.com/go-logr/logr v1.4.2 h1:6pFjapn8bFcIbiKo3XT4j/BhANplGihG6tvd+8rYgrY=
 github.com/go-logr/logr v1.4.2/go.mod h1:9T104GzyrTigFIr8wt5mBrctHMim0Nb2HLGrmQ40KvY=
 github.com/go-logr/stdr v1.2.2 h1:hSWxHoqTgW2S2qGc0LTAI563KZ5YKYRhT3MFKZMbjag=
